@@ -1,4 +1,4 @@
-import mariadb
+import mysql.connector
 from datetime import datetime
 
 class DatabaseManager:
@@ -9,15 +9,15 @@ class DatabaseManager:
     
     def connect(self):
         try:
-            self.connection = mariadb.connect(
+            self.connection = mysql.connector.connect(
                 user="user",
                 password="password",
                 host="localhost",
                 database="scada_dana"
             )
             print("Conexão com banco de dados estabelecida")
-        except mariadb.Error as e:
-            print(f"Erro ao conectar ao MariaDB: {e}")
+        except mysql.connector.Error as e:
+            print(f"Erro ao conectar ao mysql.connector: {e}")
             
     def create_tables(self):
         try:
@@ -32,7 +32,7 @@ class DatabaseManager:
                 )
             """)
             self.connection.commit()
-        except mariadb.Error as e:
+        except mysql.connector.Error as e:
             print(f"Erro ao criar tabela: {e}")
             
     def store_process_data(self, data):
@@ -50,7 +50,7 @@ class DatabaseManager:
                 data['altura_Matriz']
             ))
             self.connection.commit()
-        except mariadb.Error as e:
+        except mysql.connector.Error as e:
             print(f"Erro ao armazenar dados: {e}")
             
     def get_historical_data(self, start_date, end_date):
@@ -62,7 +62,7 @@ class DatabaseManager:
                 ORDER BY time_stamp DESC
             """, (start_date, end_date))
             return cursor.fetchall()
-        except mariadb.Error as e:
+        except mysql.connector.Error as e:
             print(f"Erro ao recuperar dados históricos: {e}")
             return []
             
