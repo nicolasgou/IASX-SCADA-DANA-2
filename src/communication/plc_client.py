@@ -1,8 +1,10 @@
 import snap7
 from datetime import datetime
 
+from src.config import PLC_IP, PLC_RACK, PLC_SLOT
+
 class PLCClient:
-    def __init__(self, ip='192.168.0.1', rack=0, slot=1):
+    def __init__(self, ip=PLC_IP, rack=PLC_RACK, slot=PLC_SLOT):
         self.client = snap7.client.Client()
         self.ip = ip
         self.rack = rack

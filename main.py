@@ -6,13 +6,17 @@ from src.database.db_manager import DatabaseManager
 import threading
 import time
 
+ctk.set_appearance_mode("light")
+
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self.configure(fg_color="white")
 
         # Configuração da janela principal
         self.title("IASX-SCADA-DANA")
         self.geometry("1920x1080")  # Otimizado para TV 50"
+
         
         # Inicialização dos componentes
         self.plc_client = PLCClient()
