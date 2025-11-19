@@ -8,21 +8,22 @@ class DatabaseManager:
     def __init__(self):
         self.connection = None
         self.connect()
-        if self.connection:
-            print("Falha ao conectar ao banco de dados; operações de histórico serão ignoradas.")
     
     def connect(self):
         try:
             # Tenta conectar diretamente ao banco especificado
             self.connection = mysql.connector.connect(**DB_CONFIG)
-            print("Conexao com banco de dados estabelecida")
+            if self.connection:
+                print("[BD] Conexao com banco de dados estabelecida")
+            else:
+                print("[BD] Sem conexão com o banco; dados não serão armazenados.")
         except mysql.connector.Error as e:
-            print(f"Erro ao conectar ao mysql.connector: {e}")
+            print(f"[BD] Erro ao conectar ao mysql.connector: {e}")
             self.connection = None
 
     def store_process_data(self, data):
         if not self.connection:
-            print("Sem conexão com o banco; dados não serão armazenados.")
+            self.connect()
             return
         try:
             cursor = self.connection.cursor()
@@ -42,7 +43,7 @@ class DatabaseManager:
             )
             self.connection.commit()
         except mysql.connector.Error as e:
-            print(f"Erro ao armazenar dados: {e}")
+            print(f"[BD] Erro ao armazenar dados: {e}")
             
     def get_historical_data(self, start_date, end_date):
         if not self.connection:
@@ -59,7 +60,7 @@ class DatabaseManager:
             )
             return cursor.fetchall()
         except mysql.connector.Error as e:
-            print(f"Erro ao recuperar dados históricos: {e}")
+            print(f"[BD] Erro ao recuperar dados históricos: {e}")
             return []
             
     def close(self):

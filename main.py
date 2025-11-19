@@ -3,6 +3,7 @@ from src.interfaces.monitor import MonitorFrame
 from src.interfaces.historico import HistoricoFrame
 from src.communication.plc_client import PLCClient
 from src.database.db_manager import DatabaseManager
+from src.config import TIMER
 import threading
 import time
 
@@ -47,11 +48,12 @@ class App(ctk.CTk):
                 
                 # Atualização da interface
                 self.monitor_frame.update_values(dados)
+
+                #se a store flag estiver ativa, armazena os dados
+                if dados['store_flag']:
+                    self.db_manager.store_process_data(dados)# Armazenamento no banco de dados
                 
-                # Armazenamento no banco de dados
-                self.db_manager.store_process_data(dados)
-                
-                time.sleep(1)  # Intervalo de amostragem de 1 segundo
+                time.sleep(TIMER)  # Intervalo de amostragem de 1 segundo
                 
             except Exception as e:
                 print(f"Erro na aquisição de dados: {e}")

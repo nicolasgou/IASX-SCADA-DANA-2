@@ -318,8 +318,8 @@ class MonitorFrame(ctk.CTkFrame):
         try:
             # Process identifiers (if provided in 'data')
             if isinstance(data, dict):
-                id_prod = data.get('id_produto')
-                cod_corr = data.get('cod_corrida')
+                id_prod = data.get('IDProdlVal')
+                cod_corr = data.get('CODCorrVal')
                 if id_prod:
                     self.lbl_IDProdlVal.configure(text=str(id_prod))
                 if cod_corr:
