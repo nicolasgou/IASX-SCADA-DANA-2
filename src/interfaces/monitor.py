@@ -84,9 +84,10 @@ class MonitorFrame(ctk.CTkFrame):
         self.FRA_MON_VAR.grid_rowconfigure((0, 1), weight=1)
 
         # FRA_PROC_ATUAL
-        self.FRA_PROC_ATUAL = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white")
-        self.FRA_PROC_ATUAL.grid(row=0, column=0, sticky="nw", pady=10, padx=10)
+        self.FRA_PROC_ATUAL = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
         self.FRA_PROC_ATUAL.grid_columnconfigure((0, 1), weight=1)
+        self.FRA_PROC_ATUAL.grid(row=0, column=0, sticky="nw", pady=10, padx=10)
+
         self.lbl_ProcAtualTitle = ctk.CTkLabel(
             self.FRA_PROC_ATUAL,
             pady=5,
@@ -97,34 +98,28 @@ class MonitorFrame(ctk.CTkFrame):
             anchor="center",
             font=("", 16),
         )
-        self.lbl_ProcAtualTitle.grid(row=0, column=0, pady=5, padx=5, columnspan=2, sticky="ew")
+        self.lbl_ProcAtualTitle.grid(row=0, column=0, columnspan=2, sticky="ew")
 
-        self.lbl_IDProdTitle = ctk.CTkLabel(
-            self.FRA_PROC_ATUAL, pady=5, padx=5, text="ID PRODUTO", text_color="gray", anchor="w", font=("", 14)
-        )
-        self.lbl_IDProdTitle.grid(row=1, column=0, pady=5, padx=5, sticky="ew")
-        self.lbl_IDProduto = ctk.CTkLabel(
-            self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold")
-        )
+        self.lbl_IDProdTitle = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="ID PRODUTO", text_color="gray", anchor="w", font=("", 14))
+        self.lbl_IDProdTitle.grid(row=1, column=0, pady=5, padx=5,sticky="ew")
+
+        self.lbl_IDProduto = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"))
         self.lbl_IDProduto.grid(row=2, column=0, pady=5, padx=5, sticky="w")
 
-        self.lbl_CODCorrTitle = ctk.CTkLabel(
-            self.FRA_PROC_ATUAL, pady=5, padx=5, text="COD. CORRIDA", text_color="gray", anchor="w", font=("", 14)
-        )
+        self.lbl_CODCorrTitle = ctk.CTkLabel(self.FRA_PROC_ATUAL, pady=5, padx=5, text="COD. CORRIDA", text_color="gray", anchor="w", font=("", 14))
         self.lbl_CODCorrTitle.grid(row=3, column=0, pady=5, padx=5, sticky="ew")
-        self.lbl_CODCorrida = ctk.CTkLabel(
-            self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold")
-        )
+        
+        self.lbl_CODCorrida = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"))
         self.lbl_CODCorrida.grid(row=4, column=0, pady=5, padx=5, sticky="w")
 
         # FRA_TEMP_FORNO
-        self.FRA_TEMP_FORNO = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white")
+        self.FRA_TEMP_FORNO = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
         self.FRA_TEMP_FORNO.grid(row=1, column=0, sticky="nw", pady=10, padx=10)
         self.FRA_TEMP_FORNO.grid_columnconfigure((0, 1, 2), weight=1)
         self.lbl_TempFornoTitle = ctk.CTkLabel(
             self.FRA_TEMP_FORNO, pady=5, padx=5, text="TEMPERATURA FORNO", bg_color="gray", text_color="white", anchor="center", font=("", 16)
         )
-        self.lbl_TempFornoTitle.grid(row=0, column=0, pady=5, padx=5, columnspan=3, sticky="ew")
+        self.lbl_TempFornoTitle.grid(row=0, column=0, columnspan=3, sticky="ew")
         self.lbl_TempFornoVal = ctk.CTkLabel(
             self.FRA_TEMP_FORNO,
             image=self._temp_icon if self._temp_icon else None,
@@ -139,13 +134,13 @@ class MonitorFrame(ctk.CTkFrame):
         self.lbl_TempFornoUnit.grid(row=1, column=2, pady=5, padx=5, sticky="e")
 
         # FRA_PRESS_CARG
-        self.FRA_PRESS_CARG = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white")
+        self.FRA_PRESS_CARG = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
         self.FRA_PRESS_CARG.grid(row=0, column=1, sticky="nw", pady=10, padx=10)
         self.FRA_PRESS_CARG.grid_columnconfigure((0, 1, 2), weight=1)
         self.lbl_PressCargTitle = ctk.CTkLabel(
             self.FRA_PRESS_CARG, pady=5, padx=5, text="PRESSAO DA CARGA", bg_color="gray", text_color="white", anchor="center", font=("", 16)
         )
-        self.lbl_PressCargTitle.grid(row=0, column=0, pady=5, padx=5, columnspan=3, sticky="ew")
+        self.lbl_PressCargTitle.grid(row=0, column=0, columnspan=3, sticky="ew")
         self.lbl_PressCargVal = ctk.CTkLabel(
             self.FRA_PRESS_CARG,
             image=self._temp_icon if self._temp_icon else None,
@@ -160,7 +155,7 @@ class MonitorFrame(ctk.CTkFrame):
         self.lbl_PressCargUnit.grid(row=1, column=2, pady=5, padx=5, sticky="e")
 
         # FRA_PRESS_IMG
-        self.FRA_PRESS_IMG = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white")
+        self.FRA_PRESS_IMG = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
         self.FRA_PRESS_IMG.grid(row=0, column=2, rowspan=2, sticky="new")
         self.FRA_PRESS_IMG.grid_columnconfigure(0, weight=1)
         self.FRA_PRESS_IMG.grid_rowconfigure(0, weight=1)
@@ -174,13 +169,13 @@ class MonitorFrame(ctk.CTkFrame):
         self.lbl_pressImg.grid(row=0, column=0, sticky="nswe")
 
         # FRA_MOTOR_AMPS
-        self.FRA_MOTOR_AMPS = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white")
+        self.FRA_MOTOR_AMPS = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
         self.FRA_MOTOR_AMPS.grid(row=0, column=3, sticky="ne", pady=10, padx=10)
         self.FRA_MOTOR_AMPS.grid_columnconfigure((0, 1, 2), weight=1)
         self.lbl_MotorAmpsTitle = ctk.CTkLabel(
             self.FRA_MOTOR_AMPS, pady=5, padx=5, text="CORRENTE MOTOR", bg_color="gray", text_color="white", anchor="center", font=("", 16)
         )
-        self.lbl_MotorAmpsTitle.grid(row=0, column=0, pady=5, padx=5, columnspan=3, sticky="ew")
+        self.lbl_MotorAmpsTitle.grid(row=0, column=0, columnspan=3, sticky="ew")
         self.lbl_MotorAmpsVal = ctk.CTkLabel(
             self.FRA_MOTOR_AMPS,
             image=self._temp_icon if self._temp_icon else None,
@@ -195,13 +190,13 @@ class MonitorFrame(ctk.CTkFrame):
         self.lbl_MotorAmpsUnit.grid(row=1, column=2, pady=5, padx=5, sticky="e")
 
         # FRA_MATRIX_ALT
-        self.FRA_MATRIX_ALT = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white")
+        self.FRA_MATRIX_ALT = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
         self.FRA_MATRIX_ALT.grid(row=1, column=4, sticky="ne", pady=10, padx=10)
         self.FRA_MATRIX_ALT.grid_columnconfigure((0, 1, 2), weight=1)
         self.lbl_MatrixAltTitle = ctk.CTkLabel(
             self.FRA_MATRIX_ALT, pady=5, padx=5, text="ALTURA DA MATRIZ", bg_color="gray", text_color="white", anchor="center", font=("", 16)
         )
-        self.lbl_MatrixAltTitle.grid(row=0, column=0, pady=5, padx=5, columnspan=3, sticky="ew")
+        self.lbl_MatrixAltTitle.grid(row=0, column=0, columnspan=3, sticky="ew")
         self.lbl_MatrixAltVal = ctk.CTkLabel(
             self.FRA_MATRIX_ALT,
             image=self._temp_icon if self._temp_icon else None,
@@ -437,7 +432,7 @@ class MonitorFrame(ctk.CTkFrame):
             else:
                 self.lbl_MatrixAltVal.configure(text="---------")
 
-            self.lbl_status.configure(text=f"[OK] Atualizado às {ts.strftime('%H:%M:%S')}", bg_color="green")
+            self.lbl_status.configure(text=f"[OK] Atualizado às {ts.strftime('%d/%m/%Y - %H:%M:%S')}", bg_color="green")
         except Exception as e:
             self.lbl_status.configure(text="[ERRO] Atualização da UI", bg_color="red")
             print(f"Erro na atualização do monitor: {e}")
