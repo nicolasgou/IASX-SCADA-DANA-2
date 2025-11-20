@@ -16,6 +16,8 @@ USE scada_dana;
 
 CREATE TABLE historico ( --Cria tabela Historico
     time_stamp DATETIME PRIMARY KEY,
+    IDProduto VARCHAR(255),
+    CODCorrida VARCHAR(255),
     temperatura_forno FLOAT,
     pressao_carga FLOAT,
     corrente_motor FLOAT,

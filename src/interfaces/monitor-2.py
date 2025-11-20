@@ -18,7 +18,7 @@ from clp_manager import CLPClient
 from db_maneger import insert_dados
 
 
-global IDProdlVal, CODCorrVal, PressCargVal, MotorAmpsVal, TempFornoVal, MatrixAltVal
+global IDProduto, CODCorrida, PressCargVal, MotorAmpsVal, TempFornoVal, MatrixAltVal
 
 
 class AppGUI(ctk.CTk):
@@ -87,13 +87,13 @@ class AppGUI(ctk.CTk):
         
         self.lbl_IDProdTitle = ctk.CTkLabel(self.FRA_PROC_ATUAL,pady=5, padx=5, text="ID PRODUTO", text_color="gray",anchor="w", font=('', 18)) 
         self.lbl_IDProdTitle.grid(row=1, column=0, pady=5, padx=5,columnspan=1,sticky="ew")
-        self.lbl_IDProdlVal = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="????????", justify="left", compound="left", anchor="w",font=ctk.CTkFont(size=25, weight="bold") )
-        self.lbl_IDProdlVal.grid(row=2, column=0, pady=5, padx=5, sticky="w")
+        self.lbl_IDProduto = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="????????", justify="left", compound="left", anchor="w",font=ctk.CTkFont(size=25, weight="bold") )
+        self.lbl_IDProduto.grid(row=2, column=0, pady=5, padx=5, sticky="w")
 
         self.lbl_CODCorrTitle = ctk.CTkLabel(self.FRA_PROC_ATUAL,pady=5, padx=5, text="COD. CORRIDA", text_color="gray",anchor="w", font=('', 18)) 
         self.lbl_CODCorrTitle.grid(row=3, column=0, pady=5, padx=5,columnspan=1,sticky="ew")
-        self.lbl_CODCorrVal = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="????????", justify="left", compound="left", anchor="w",font=ctk.CTkFont(size=25, weight="bold") )
-        self.lbl_CODCorrVal.grid(row=4, column=0, pady=5, padx=5, sticky="w")
+        self.lbl_CODCorrida = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="????????", justify="left", compound="left", anchor="w",font=ctk.CTkFont(size=25, weight="bold") )
+        self.lbl_CODCorrida.grid(row=4, column=0, pady=5, padx=5, sticky="w")
 
         self.FRA_TEMP_FORNO = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white")
         self.FRA_TEMP_FORNO.grid(row=1, column=0,sticky="nw", pady=10, padx=10)
@@ -247,11 +247,11 @@ class AppGUI(ctk.CTk):
     def update_data(self):
         if self.clp.is_connected():
             try:
-                IDProdlVal = self.clp.read_string(db_number=2, start_byte=0, max_length = 20)
-                self.lbl_IDProdlVal.configure(text=IDProdlVal)
+                IDProduto = self.clp.read_string(db_number=2, start_byte=0, max_length = 20)
+                self.lbl_IDProduto.configure(text=IDProduto)
                 ###############################################################################
-                CODCorrVal = self.clp.read_string(db_number=2, start_byte=22,max_length = 20)
-                self.lbl_CODCorrVal.configure(text=CODCorrVal)
+                CODCorrida = self.clp.read_string(db_number=2, start_byte=22,max_length = 20)
+                self.lbl_CODCorrida.configure(text=CODCorrida)
                 ###############################################################################
                 TempFornoVal = self.clp.read_real(db_number=2, start_byte=52)
                 if TempFornoVal is not None:

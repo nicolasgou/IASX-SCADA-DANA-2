@@ -4,6 +4,7 @@ from src.interfaces.historico import HistoricoFrame
 from src.communication.plc_client import PLCClient
 from src.database.db_manager import DatabaseManager
 from src.config import TIMER
+
 import threading
 import time
 
@@ -32,7 +33,7 @@ class App(ctk.CTk):
         self.tab_historico = self.tabview.add("HISTÓRICO")
         
         # Frames principais
-        self.monitor_frame = MonitorFrame(self.tab_monitor, self.plc_client)
+        self.monitor_frame = MonitorFrame(self.tab_monitor, self.plc_client, self.db_manager)
         self.historico_frame = HistoricoFrame(self.tab_historico, self.db_manager)
         
         # Iniciar thread de aquisição de dados
@@ -56,7 +57,7 @@ class App(ctk.CTk):
                 time.sleep(TIMER)  # Intervalo de amostragem de 1 segundo
                 
             except Exception as e:
-                print(f"Erro na aquisição de dados: {e}")
+                print(f"[App] Erro na aquisição de dados: {e}")
                 time.sleep(5)  # Tempo de espera antes de tentar novamente
     
     def on_closing(self):

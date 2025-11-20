@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from collections import deque
 from datetime import datetime
+from src.config import FONT_FACTOR
 import os
 
 # Optional PIL (images)
@@ -21,11 +22,12 @@ except Exception:
 
 
 class MonitorFrame(ctk.CTkFrame):
-    def __init__(self, parent, plc_client):
+    def __init__(self, parent, plc_client, db_manager):
 
         super().__init__(parent)
         self.pack(expand=True, fill="both", padx=10, pady=10)
         self.plc_client = plc_client
+        self.db_manager = db_manager
 
         # Layout config similar to monitor-2.py
         self.grid_columnconfigure((0, 1), weight=1)
@@ -62,7 +64,7 @@ class MonitorFrame(ctk.CTkFrame):
             justify="center",
             compound="center",
             anchor="center",
-            font=ctk.CTkFont(size=32, weight="bold"),
+            font=ctk.CTkFont(size=40, weight="bold"),
         )
         self.lbl_appTitle.grid(row=0, column=0, padx=10, pady=10, columnspan=2, sticky="nwes")
 
@@ -101,19 +103,19 @@ class MonitorFrame(ctk.CTkFrame):
             self.FRA_PROC_ATUAL, pady=5, padx=5, text="ID PRODUTO", text_color="gray", anchor="w", font=("", 14)
         )
         self.lbl_IDProdTitle.grid(row=1, column=0, pady=5, padx=5, sticky="ew")
-        self.lbl_IDProdlVal = ctk.CTkLabel(
-            self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=18, weight="bold")
+        self.lbl_IDProduto = ctk.CTkLabel(
+            self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold")
         )
-        self.lbl_IDProdlVal.grid(row=2, column=0, pady=5, padx=5, sticky="w")
+        self.lbl_IDProduto.grid(row=2, column=0, pady=5, padx=5, sticky="w")
 
         self.lbl_CODCorrTitle = ctk.CTkLabel(
             self.FRA_PROC_ATUAL, pady=5, padx=5, text="COD. CORRIDA", text_color="gray", anchor="w", font=("", 14)
         )
         self.lbl_CODCorrTitle.grid(row=3, column=0, pady=5, padx=5, sticky="ew")
-        self.lbl_CODCorrVal = ctk.CTkLabel(
-            self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=18, weight="bold")
+        self.lbl_CODCorrida = ctk.CTkLabel(
+            self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold")
         )
-        self.lbl_CODCorrVal.grid(row=4, column=0, pady=5, padx=5, sticky="w")
+        self.lbl_CODCorrida.grid(row=4, column=0, pady=5, padx=5, sticky="w")
 
         # FRA_TEMP_FORNO
         self.FRA_TEMP_FORNO = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white")
@@ -130,7 +132,7 @@ class MonitorFrame(ctk.CTkFrame):
             justify="center",
             compound="left",
             anchor="e",
-            font=ctk.CTkFont(size=20, weight="bold"),
+            font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"),
         )
         self.lbl_TempFornoVal.grid(row=1, column=1, pady=5, padx=5, sticky="w")
         self.lbl_TempFornoUnit = ctk.CTkLabel(self.FRA_TEMP_FORNO, pady=5, padx=5, text="°C", anchor="center", text_color="gray", font=("", 14))
@@ -151,7 +153,7 @@ class MonitorFrame(ctk.CTkFrame):
             justify="center",
             compound="left",
             anchor="e",
-            font=ctk.CTkFont(size=20, weight="bold"),
+            font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"),
         )
         self.lbl_PressCargVal.grid(row=1, column=1, pady=5, padx=5, sticky="w")
         self.lbl_PressCargUnit = ctk.CTkLabel(self.FRA_PRESS_CARG, pady=5, padx=5, text="KN", anchor="center", text_color="gray", font=("", 14))
@@ -186,7 +188,7 @@ class MonitorFrame(ctk.CTkFrame):
             justify="center",
             compound="left",
             anchor="e",
-            font=ctk.CTkFont(size=20, weight="bold"),
+            font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"),
         )
         self.lbl_MotorAmpsVal.grid(row=1, column=1, pady=5, padx=5, sticky="w")
         self.lbl_MotorAmpsUnit = ctk.CTkLabel(self.FRA_MOTOR_AMPS, pady=5, padx=5, text="Amps", anchor="center", text_color="gray", font=("", 14))
@@ -207,7 +209,7 @@ class MonitorFrame(ctk.CTkFrame):
             justify="center",
             compound="left",
             anchor="e",
-            font=ctk.CTkFont(size=20, weight="bold"),
+            font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"),
         )
         self.lbl_MatrixAltVal.grid(row=1, column=1, pady=5, padx=5, sticky="w")
         self.lbl_MatrixAltUnit = ctk.CTkLabel(self.FRA_MATRIX_ALT, pady=5, padx=5, text="mm", anchor="center", text_color="gray", font=("", 14))
@@ -223,7 +225,7 @@ class MonitorFrame(ctk.CTkFrame):
             self.FRA_MON_GRAPHS,
             pady=5,
             padx=5,
-            text="HISTORICO (24hrs)",
+            text="HISTORICO VARIAVEIS DO PROCESSO",
             bg_color="gray",
             text_color="white",
             anchor="center",
@@ -246,7 +248,7 @@ class MonitorFrame(ctk.CTkFrame):
             self.TempFornoAx.legend()
             self.TempFornoAx.grid(True)
             self.TempFornoCanvas = FigureCanvasTkAgg(self.TempFornoFig, master=self.FRA_MON_GRAPHS)
-            self.TempFornoCanvas.get_tk_widget().grid(row=1, column=0, sticky="w", pady=5, padx=5)
+            self.TempFornoCanvas.get_tk_widget().grid(row=1, column=0, sticky="nsew", pady=5, padx=5)
 
             # Pressure graph
             self.PressCargHist = deque(maxlen=50)
@@ -261,7 +263,7 @@ class MonitorFrame(ctk.CTkFrame):
             self.PressCargAx.legend()
             self.PressCargAx.grid(True)
             self.PressCargCanvas = FigureCanvasTkAgg(self.PressCargFig, master=self.FRA_MON_GRAPHS)
-            self.PressCargCanvas.get_tk_widget().grid(row=1, column=1, sticky="ew", pady=5, padx=5)
+            self.PressCargCanvas.get_tk_widget().grid(row=1, column=1, sticky="nsew", pady=5, padx=5)
 
             # Motor current graph
             self.MotorAmpsHist = deque(maxlen=50)
@@ -276,28 +278,32 @@ class MonitorFrame(ctk.CTkFrame):
             self.MotorAmpsAx.legend()
             self.MotorAmpsAx.grid(True)
             self.MotorAmpsCanvas = FigureCanvasTkAgg(self.MotorAmpsFig, master=self.FRA_MON_GRAPHS)
-            self.MotorAmpsCanvas.get_tk_widget().grid(row=1, column=2, sticky="e", pady=5, padx=5)
+            self.MotorAmpsCanvas.get_tk_widget().grid(row=1, column=2, sticky="nsew", pady=5, padx=5)
         else:
             ctk.CTkLabel(self.FRA_MON_GRAPHS, text="Gráficos indisponíveis (Matplotlib não encontrado)").grid(
                 row=1, column=0, columnspan=3, padx=10, pady=10
             )
 
-        # FRA_APP_BUTT (disabled placeholders to match monitor-2 layout)
-        self.FRA_APP_BUTT = ctk.CTkFrame(self, corner_radius=0, fg_color="white")
-        self.FRA_APP_BUTT.grid(row=3, column=0, pady=5, padx=5, columnspan=2, sticky="sew")
-        self.FRA_APP_BUTT.grid_columnconfigure((0, 1, 2), weight=1)
-        self.FRA_APP_BUTT.grid_rowconfigure(0, weight=1)
-        self.btn_monitor = ctk.CTkButton(self.FRA_APP_BUTT, text="MONITOR", state="disabled", height=40)
-        self.btn_monitor.grid(row=0, column=0, pady=5, padx=5, sticky="w")
-        self.btn_historico = ctk.CTkButton(self.FRA_APP_BUTT, text="HISTORICO", state="disabled", height=40)
-        self.btn_historico.grid(row=0, column=1, pady=5, padx=5)
-        self.btn_export = ctk.CTkButton(self.FRA_APP_BUTT, text="EXPORTAR", state="disabled", height=40)
-        self.btn_export.grid(row=0, column=2, pady=5, padx=5, sticky="e")
+        # # FRA_APP_BUTT (disabled placeholders to match monitor-2 layout)
+        # self.FRA_APP_BUTT = ctk.CTkFrame(self, corner_radius=0, fg_color="white")
+        # self.FRA_APP_BUTT.grid(row=3, column=0, pady=5, padx=5, columnspan=2, sticky="sew")
+        # self.FRA_APP_BUTT.grid_columnconfigure((0, 1, 2), weight=1)
+        # self.FRA_APP_BUTT.grid_rowconfigure(0, weight=1)
+        # self.btn_monitor = ctk.CTkButton(self.FRA_APP_BUTT, text="MONITOR", state="disabled", height=40)
+        # self.btn_monitor.grid(row=0, column=0, pady=5, padx=5, sticky="w")
+        # self.btn_historico = ctk.CTkButton(self.FRA_APP_BUTT, text="HISTORICO", state="disabled", height=40)
+        # self.btn_historico.grid(row=0, column=1, pady=5, padx=5)
+        # self.btn_export = ctk.CTkButton(self.FRA_APP_BUTT, text="EXPORTAR", state="disabled", height=40)
+        # self.btn_export.grid(row=0, column=2, pady=5, padx=5, sticky="e")
 
         # FRA_APP_STATUS
         self.FRA_APP_STATUS = ctk.CTkFrame(self, corner_radius=0, fg_color="white")
         self.FRA_APP_STATUS.grid(row=4, column=0, pady=5, sticky="sew", columnspan=2)
-        self.FRA_APP_STATUS.grid_columnconfigure((0, 1), weight=1)
+        #self.FRA_APP_STATUS.grid_columnconfigure((0, 1), weight=1)
+        self.FRA_APP_STATUS.grid_columnconfigure(0, weight=1)
+        self.FRA_APP_STATUS.grid_columnconfigure(1, weight=0, minsize=60)
+        self.FRA_APP_STATUS.grid_columnconfigure(2, weight=0, minsize=60)
+        self.FRA_APP_STATUS.grid_columnconfigure(3, weight=0, minsize=60)
         self.lbl_status = ctk.CTkLabel(
             self.FRA_APP_STATUS,
             text="STATUS",
@@ -308,22 +314,83 @@ class MonitorFrame(ctk.CTkFrame):
             pady=5,
             padx=5,
         )
-        self.lbl_status.grid(row=0, column=0, pady=5, padx=5, columnspan=2, sticky="ew")
+        self.lbl_status.grid(row=0, column=0, pady=5, sticky="ew")
+
+        self.lbl_statusCLP = ctk.CTkLabel(
+            self.FRA_APP_STATUS,
+            text="CLP",
+            anchor="e",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            text_color="white",
+            bg_color="red",
+            pady=5,
+            padx=5,
+        )
+        self.lbl_statusCLP.grid(row=0, column=1, pady=5, padx=5, sticky="e")
+
+        self.lbl_statusBD = ctk.CTkLabel(
+            self.FRA_APP_STATUS,
+            text="BDD",
+            anchor="e",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            text_color="white",
+            bg_color="orange",
+            pady=5,
+            padx=5,
+        )
+        self.lbl_statusBD.grid(row=0, column=2, pady=5, padx=5, sticky="e")
+
+        self.lbl_statusST = ctk.CTkLabel(
+            self.FRA_APP_STATUS,
+            text="STO",
+            anchor="e",
+            font=ctk.CTkFont(size=14, weight="bold"),
+            text_color="white",
+            bg_color="red",
+            pady=5,
+            padx=5,
+        )
+        self.lbl_statusST.grid(row=0, column=3, pady=5, padx=5, sticky="e")
 
     def update_values(self, data):
-        if not data:
+        
+
+        # Atualiza status visual da flag CLP status
+        try:
+            #self.plc_client.check_clp_connection() essa funcao nao estava funcionado!!
+            clp_ok = bool(getattr(self.plc_client, "CLPconnection", False))
+        except Exception:
+            clp_ok = False
+
+        self.lbl_statusCLP.configure(bg_color=("green" if clp_ok else "red"))
+
+        # Atualiza status visual da flag BD status
+        try:
+            self.db_manager.check_db_connection()
+            db_ok = bool(getattr(self.db_manager, "DBconnection", False))
+        except Exception:
+            db_ok = False
+            
+        self.lbl_statusBD.configure(bg_color=("green" if db_ok else "red"))
+
+        # Atualiza status visual da flag Store status
+        st = data.get('store_flag')
+        self.lbl_statusST.configure(bg_color=("green" if st else "red"))
+
+        ts = data.get('time_stamp')
+        if ts == None:
             self.lbl_status.configure(text="[Falha] Sem dados", bg_color="red")
             return
-
+        
         try:
             # Process identifiers (if provided in 'data')
             if isinstance(data, dict):
-                id_prod = data.get('IDProdlVal')
-                cod_corr = data.get('CODCorrVal')
-                if id_prod:
-                    self.lbl_IDProdlVal.configure(text=str(id_prod))
-                if cod_corr:
-                    self.lbl_CODCorrVal.configure(text=str(cod_corr))
+                IDprod = data.get('IDProduto')
+                CODcorr = data.get('CODCorrida')
+                if IDprod:
+                    self.lbl_IDProduto.configure(text=str(IDprod))
+                if CODcorr:
+                    self.lbl_CODCorrida.configure(text=str(CODcorr))
 
             # Values
             temp = data.get('temperatura_forno')
@@ -372,5 +439,5 @@ class MonitorFrame(ctk.CTkFrame):
 
             self.lbl_status.configure(text=f"[OK] Atualizado às {ts.strftime('%H:%M:%S')}", bg_color="green")
         except Exception as e:
-            self.lbl_status.configure(text="[Falha] Atualização da UI", bg_color="red")
+            self.lbl_status.configure(text="[ERRO] Atualização da UI", bg_color="red")
             print(f"Erro na atualização do monitor: {e}")
