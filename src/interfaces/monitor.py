@@ -1,7 +1,8 @@
 import customtkinter as ctk
 from collections import deque
 from datetime import datetime
-from src.config import FONT_FACTOR
+from src.config import PV_FONT_SIZE, UNIT_FONT_SIZE, TITLE_FONT_SIZE
+from src.config import FRA_PROC_ATUAL_WIDTH, FRA_TEMP_FORNO_WIDTH, FRA_PRESS_CARG_WIDTH, FRA_MOTOR_AMPS_WIDTH, FRA_MATRIX_ALT_WIDTH
 import os
 
 # Optional PIL (images)
@@ -37,6 +38,9 @@ class MonitorFrame(ctk.CTkFrame):
         # Assets
         self._app_logo = None
         self._temp_icon = None
+        self._press_icon = None
+        self._motor_icon = None
+        self._matrix_icon = None
         self._press_img = None
         assets_dir = os.path.join('.', 'assets')
         if HAS_PIL and os.path.isdir(assets_dir):
@@ -45,14 +49,25 @@ class MonitorFrame(ctk.CTkFrame):
             except Exception:
                 self._app_logo = None
             try:
-                self._temp_icon = ctk.CTkImage(Image.open(os.path.join(assets_dir,'icons', 'temp_ico.png')), size=(50, 50))
+                self._press_img = ctk.CTkImage(Image.open(os.path.join(assets_dir,'imgs', 'press_img.png')), size=(320, 470))
+            except Exception:
+                self._press_img = None
+            try:
+                self._temp_icon = ctk.CTkImage(Image.open(os.path.join(assets_dir,'imgs', 'temp_icon.png')), size=(50, 50))
             except Exception:
                 self._temp_icon = None
             try:
-                self._press_img = ctk.CTkImage(Image.open(os.path.join(assets_dir,'imgs', 'press_img.png')), size=(300, 400))
+                self._press_icon = ctk.CTkImage(Image.open(os.path.join(assets_dir,'imgs', 'press_icon.png')), size=(50, 50))
             except Exception:
-                self._press_img = None
-
+                self._press_icon = None
+            try:
+                self._motor_icon = ctk.CTkImage(Image.open(os.path.join(assets_dir,'imgs', 'motor_icon.png')), size=(70, 50))
+            except Exception:
+                self._motor_icon = None
+            try:
+                self._matrix_icon = ctk.CTkImage(Image.open(os.path.join(assets_dir,'imgs', 'matrix_icon.png')), size=(50, 50))
+            except Exception:
+                self._matrix_icon = None
         # FRA_APP_TITLE
         self.FRA_APP_TITLE = ctk.CTkFrame(self, corner_radius=0, fg_color="white")
         self.FRA_APP_TITLE.grid(row=0, column=0, pady=5, padx=5, sticky="new", columnspan=2)
@@ -85,80 +100,106 @@ class MonitorFrame(ctk.CTkFrame):
 
         # FRA_PROC_ATUAL
         self.FRA_PROC_ATUAL = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
-        self.FRA_PROC_ATUAL.grid_columnconfigure((0, 1), weight=1)
+        self.FRA_PROC_ATUAL.grid_columnconfigure((0, 1), weight=1,minsize=FRA_PROC_ATUAL_WIDTH)
         self.FRA_PROC_ATUAL.grid(row=0, column=0, sticky="nw", pady=10, padx=10)
 
         self.lbl_ProcAtualTitle = ctk.CTkLabel(
             self.FRA_PROC_ATUAL,
-            pady=5,
-            padx=5,
+            pady=5,padx=5,
             text="PROCESSAO ATUAL",
             bg_color="gray",
             text_color="white",
             anchor="center",
-            font=("", 16),
+            font=("", TITLE_FONT_SIZE),
         )
         self.lbl_ProcAtualTitle.grid(row=0, column=0, columnspan=2, sticky="ew")
 
-        self.lbl_IDProdTitle = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="ID PRODUTO", text_color="gray", anchor="w", font=("", 14))
+        self.lbl_IDProdTitle = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="ID PRODUTO", text_color="gray", anchor="w", font=("", PV_FONT_SIZE-4))
         self.lbl_IDProdTitle.grid(row=1, column=0, pady=5, padx=5,sticky="ew")
 
-        self.lbl_IDProduto = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"))
-        self.lbl_IDProduto.grid(row=2, column=0, pady=5, padx=5, sticky="w")
+        self.lbl_IDProduto = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=PV_FONT_SIZE, weight="bold"))
+        self.lbl_IDProduto.grid(row=2, column=0, pady=5, padx=30, sticky="w")
 
-        self.lbl_CODCorrTitle = ctk.CTkLabel(self.FRA_PROC_ATUAL, pady=5, padx=5, text="COD. CORRIDA", text_color="gray", anchor="w", font=("", 14))
+        self.lbl_CODCorrTitle = ctk.CTkLabel(self.FRA_PROC_ATUAL, pady=5, padx=5, text="COD. CORRIDA", text_color="gray", anchor="w", font=("", PV_FONT_SIZE-4))
         self.lbl_CODCorrTitle.grid(row=3, column=0, pady=5, padx=5, sticky="ew")
         
-        self.lbl_CODCorrida = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"))
-        self.lbl_CODCorrida.grid(row=4, column=0, pady=5, padx=5, sticky="w")
+        self.lbl_CODCorrida = ctk.CTkLabel(self.FRA_PROC_ATUAL, text="--------", justify="left", compound="left", anchor="w", font=ctk.CTkFont(size=PV_FONT_SIZE, weight="bold"))
+        self.lbl_CODCorrida.grid(row=4, column=0, pady=5, padx=30, sticky="w")
 
         # FRA_TEMP_FORNO
         self.FRA_TEMP_FORNO = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
+        self.FRA_TEMP_FORNO.grid_columnconfigure((0, 1, 2), weight=1,minsize=FRA_TEMP_FORNO_WIDTH)
         self.FRA_TEMP_FORNO.grid(row=1, column=0, sticky="nw", pady=10, padx=10)
-        self.FRA_TEMP_FORNO.grid_columnconfigure((0, 1, 2), weight=1)
+        
+
         self.lbl_TempFornoTitle = ctk.CTkLabel(
-            self.FRA_TEMP_FORNO, pady=5, padx=5, text="TEMPERATURA FORNO", bg_color="gray", text_color="white", anchor="center", font=("", 16)
+            self.FRA_TEMP_FORNO, pady=5, padx=5, text="TEMPERATURA FORNO", bg_color="gray", text_color="white", anchor="center", font=("", TITLE_FONT_SIZE)
         )
-        self.lbl_TempFornoTitle.grid(row=0, column=0, columnspan=3, sticky="ew")
-        self.lbl_TempFornoVal = ctk.CTkLabel(
+        self.lbl_TempFornoTitle.grid(row=0, column=0,columnspan=3, sticky="ew")
+        
+        self.lbl_TempFornoIcon = ctk.CTkLabel(
             self.FRA_TEMP_FORNO,
             image=self._temp_icon if self._temp_icon else None,
+            text="",
+            justify="left",
+            compound="left",
+            anchor="w",
+        )
+        self.lbl_TempFornoIcon.grid(row=1, column=0, pady=5, padx=5, sticky="w")
+
+        self.lbl_TempFornoVal = ctk.CTkLabel(
+            self.FRA_TEMP_FORNO,
+            #image=self._temp_icon if self._temp_icon else None,
             text="---------",
             justify="center",
             compound="left",
-            anchor="e",
-            font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"),
+            anchor="w",
+            font=ctk.CTkFont(size=PV_FONT_SIZE, weight="bold"),
         )
-        self.lbl_TempFornoVal.grid(row=1, column=1, pady=5, padx=5, sticky="w")
-        self.lbl_TempFornoUnit = ctk.CTkLabel(self.FRA_TEMP_FORNO, pady=5, padx=5, text="°C", anchor="center", text_color="gray", font=("", 14))
+        self.lbl_TempFornoVal.grid(row=1, column=1, pady=5, padx=5, sticky="we")
+
+        self.lbl_TempFornoUnit = ctk.CTkLabel(self.FRA_TEMP_FORNO, pady=5, padx=5, text="°C", anchor="center", text_color="gray", font=("", UNIT_FONT_SIZE))
         self.lbl_TempFornoUnit.grid(row=1, column=2, pady=5, padx=5, sticky="e")
 
         # FRA_PRESS_CARG
         self.FRA_PRESS_CARG = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
-        self.FRA_PRESS_CARG.grid(row=0, column=1, sticky="nw", pady=10, padx=10)
-        self.FRA_PRESS_CARG.grid_columnconfigure((0, 1, 2), weight=1)
+        self.FRA_PRESS_CARG.grid_columnconfigure((0, 1, 2), weight=1,minsize=FRA_PRESS_CARG_WIDTH)
+        self.FRA_PRESS_CARG.grid(row=0, column=1, sticky="ne", pady=10, padx=10)
         self.lbl_PressCargTitle = ctk.CTkLabel(
-            self.FRA_PRESS_CARG, pady=5, padx=5, text="PRESSAO DA CARGA", bg_color="gray", text_color="white", anchor="center", font=("", 16)
+            self.FRA_PRESS_CARG, pady=5, padx=5, text="PRESSAO DA CARGA", bg_color="gray", text_color="white", anchor="center", font=("", TITLE_FONT_SIZE)
         )
         self.lbl_PressCargTitle.grid(row=0, column=0, columnspan=3, sticky="ew")
+
+        self.lbl_PressCargIcon = ctk.CTkLabel(
+            self.FRA_PRESS_CARG,
+            image=self._press_icon if self._press_icon else None,
+            text="",
+            justify="left",
+            compound="left",
+            anchor="w",
+        )
+        self.lbl_PressCargIcon.grid(row=1, column=0, pady=5, padx=5, sticky="w")
+
         self.lbl_PressCargVal = ctk.CTkLabel(
             self.FRA_PRESS_CARG,
-            image=self._temp_icon if self._temp_icon else None,
+            #image=self._press_icon if self._press_icon else None,
             text="---------",
             justify="center",
             compound="left",
             anchor="e",
-            font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"),
+            font=ctk.CTkFont(size=PV_FONT_SIZE, weight="bold"),
         )
         self.lbl_PressCargVal.grid(row=1, column=1, pady=5, padx=5, sticky="w")
-        self.lbl_PressCargUnit = ctk.CTkLabel(self.FRA_PRESS_CARG, pady=5, padx=5, text="KN", anchor="center", text_color="gray", font=("", 14))
+
+        self.lbl_PressCargUnit = ctk.CTkLabel(self.FRA_PRESS_CARG, pady=5, padx=5, text="KN", anchor="center", text_color="gray", font=("", UNIT_FONT_SIZE))
         self.lbl_PressCargUnit.grid(row=1, column=2, pady=5, padx=5, sticky="e")
 
         # FRA_PRESS_IMG
         self.FRA_PRESS_IMG = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
-        self.FRA_PRESS_IMG.grid(row=0, column=2, rowspan=2, sticky="new")
         self.FRA_PRESS_IMG.grid_columnconfigure(0, weight=1)
+        self.FRA_PRESS_IMG.grid(row=0, column=2, rowspan=2, sticky="new")
         self.FRA_PRESS_IMG.grid_rowconfigure(0, weight=1)
+        
         self.lbl_pressImg = ctk.CTkLabel(
             self.FRA_PRESS_IMG,
             text="",
@@ -171,43 +212,68 @@ class MonitorFrame(ctk.CTkFrame):
         # FRA_MOTOR_AMPS
         self.FRA_MOTOR_AMPS = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
         self.FRA_MOTOR_AMPS.grid(row=0, column=3, sticky="ne", pady=10, padx=10)
-        self.FRA_MOTOR_AMPS.grid_columnconfigure((0, 1, 2), weight=1)
+        self.FRA_MOTOR_AMPS.grid_columnconfigure((0, 1, 2), weight=1,minsize=FRA_MOTOR_AMPS_WIDTH)
+
         self.lbl_MotorAmpsTitle = ctk.CTkLabel(
-            self.FRA_MOTOR_AMPS, pady=5, padx=5, text="CORRENTE MOTOR", bg_color="gray", text_color="white", anchor="center", font=("", 16)
+            self.FRA_MOTOR_AMPS, pady=5, padx=5, text="CORRENTE MOTOR", bg_color="gray", text_color="white", anchor="center", font=("", TITLE_FONT_SIZE)
         )
         self.lbl_MotorAmpsTitle.grid(row=0, column=0, columnspan=3, sticky="ew")
+
+        self.lbl_MotorAmpsIcon = ctk.CTkLabel(
+            self.FRA_MOTOR_AMPS,
+            image=self._motor_icon if self._motor_icon else None,
+            text="",
+            justify="left",
+            compound="left",
+            anchor="w",
+        )
+        self.lbl_MotorAmpsIcon.grid(row=1, column=0, pady=5, padx=5, sticky="w")
+
         self.lbl_MotorAmpsVal = ctk.CTkLabel(
             self.FRA_MOTOR_AMPS,
-            image=self._temp_icon if self._temp_icon else None,
+            #image=self._motor_icon if self._motor_icon else None,
             text="---------",
             justify="center",
             compound="left",
             anchor="e",
-            font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"),
+            font=ctk.CTkFont(size=PV_FONT_SIZE, weight="bold"),
         )
         self.lbl_MotorAmpsVal.grid(row=1, column=1, pady=5, padx=5, sticky="w")
-        self.lbl_MotorAmpsUnit = ctk.CTkLabel(self.FRA_MOTOR_AMPS, pady=5, padx=5, text="Amps", anchor="center", text_color="gray", font=("", 14))
+
+        self.lbl_MotorAmpsUnit = ctk.CTkLabel(self.FRA_MOTOR_AMPS, pady=5, padx=5, text="Amps", anchor="center", text_color="gray", font=("", UNIT_FONT_SIZE))
         self.lbl_MotorAmpsUnit.grid(row=1, column=2, pady=5, padx=5, sticky="e")
 
         # FRA_MATRIX_ALT
         self.FRA_MATRIX_ALT = ctk.CTkFrame(self.FRA_MON_VAR, corner_radius=0, fg_color="white", border_width=1, border_color="gray")
         self.FRA_MATRIX_ALT.grid(row=1, column=4, sticky="ne", pady=10, padx=10)
-        self.FRA_MATRIX_ALT.grid_columnconfigure((0, 1, 2), weight=1)
+        self.FRA_MATRIX_ALT.grid_columnconfigure((0, 1, 2), weight=1,minsize=FRA_MATRIX_ALT_WIDTH)
         self.lbl_MatrixAltTitle = ctk.CTkLabel(
-            self.FRA_MATRIX_ALT, pady=5, padx=5, text="ALTURA DA MATRIZ", bg_color="gray", text_color="white", anchor="center", font=("", 16)
+            self.FRA_MATRIX_ALT, pady=5, padx=5, text="ALTURA DA MATRIZ", bg_color="gray", text_color="white", anchor="center", font=("", TITLE_FONT_SIZE)
         )
         self.lbl_MatrixAltTitle.grid(row=0, column=0, columnspan=3, sticky="ew")
+
+        self.lbl_MatrixAltIcon = ctk.CTkLabel(
+            self.FRA_MATRIX_ALT,
+            image=self._matrix_icon if self._matrix_icon else None,
+            text="",
+            justify="left",
+            compound="left",
+            anchor="w",
+        )
+        self.lbl_MatrixAltIcon.grid(row=1, column=0, pady=5, padx=5, sticky="w")
+
         self.lbl_MatrixAltVal = ctk.CTkLabel(
             self.FRA_MATRIX_ALT,
-            image=self._temp_icon if self._temp_icon else None,
+            #image=self._matrix_icon if self._matrix_icon else None,
             text="---------",
             justify="center",
             compound="left",
             anchor="e",
-            font=ctk.CTkFont(size=FONT_FACTOR*20, weight="bold"),
+            font=ctk.CTkFont(size=PV_FONT_SIZE, weight="bold"),
         )
         self.lbl_MatrixAltVal.grid(row=1, column=1, pady=5, padx=5, sticky="w")
-        self.lbl_MatrixAltUnit = ctk.CTkLabel(self.FRA_MATRIX_ALT, pady=5, padx=5, text="mm", anchor="center", text_color="gray", font=("", 14))
+        
+        self.lbl_MatrixAltUnit = ctk.CTkLabel(self.FRA_MATRIX_ALT, pady=5, padx=5, text="mm", anchor="center", text_color="gray", font=("", UNIT_FONT_SIZE))
         self.lbl_MatrixAltUnit.grid(row=1, column=2, pady=5, padx=5, sticky="e")
 
         # FRA_MON_GRAPHS
@@ -224,9 +290,9 @@ class MonitorFrame(ctk.CTkFrame):
             bg_color="gray",
             text_color="white",
             anchor="center",
-            font=("", 16),
+            font=("", TITLE_FONT_SIZE),
         )
-        self.lbl_MonGraphTitle.grid(row=0, column=0, pady=5, padx=5, columnspan=3, sticky="ew")
+        self.lbl_MonGraphTitle.grid(row=0, column=0, columnspan=3, sticky="ew")
 
         self._graphs_enabled = HAS_MPL
         if self._graphs_enabled:
@@ -236,44 +302,44 @@ class MonitorFrame(ctk.CTkFrame):
             self.TempFornoFig = Figure(figsize=(5, 3))
             self.TempFornoAx = self.TempFornoFig.add_subplot(111)
             self.TempFornoLine, = self.TempFornoAx.plot_date([], [], label="Temperatura Forno", fmt='r-', linewidth=2)
-            self.TempFornoAx.set_title("Temperatura do Forno")
+            #self.TempFornoAx.set_title("Temperatura do Forno")
             self.TempFornoAx.set_xlabel("Hora")
             self.TempFornoAx.set_ylabel("Temperatura (°C)")
             self.TempFornoAx.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
             self.TempFornoAx.legend()
             self.TempFornoAx.grid(True)
             self.TempFornoCanvas = FigureCanvasTkAgg(self.TempFornoFig, master=self.FRA_MON_GRAPHS)
-            self.TempFornoCanvas.get_tk_widget().grid(row=1, column=0, sticky="nsew", pady=5, padx=5)
+            self.TempFornoCanvas.get_tk_widget().grid(row=1, column=0, sticky="nsew", pady=2.5, padx=2.5)
 
             # Pressure graph
             self.PressCargHist = deque(maxlen=50)
             self.PressCargTime = deque(maxlen=50)
             self.PressCargFig = Figure(figsize=(5, 3))
             self.PressCargAx = self.PressCargFig.add_subplot(111)
-            self.PressCargLine, = self.PressCargAx.plot_date([], [], label="Pressao da Carga", fmt='b-', linewidth=2)
-            self.PressCargAx.set_title("Pressao da Carga")
+            self.PressCargLine, = self.PressCargAx.plot_date([], [], fmt='b-', linewidth=2,label="Pressao da Carga")
+            #self.PressCargAx.set_title("Pressao da Carga")
             self.PressCargAx.set_xlabel("Hora")
             self.PressCargAx.set_ylabel("Pressao (KN)")
             self.PressCargAx.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
             self.PressCargAx.legend()
             self.PressCargAx.grid(True)
             self.PressCargCanvas = FigureCanvasTkAgg(self.PressCargFig, master=self.FRA_MON_GRAPHS)
-            self.PressCargCanvas.get_tk_widget().grid(row=1, column=1, sticky="nsew", pady=5, padx=5)
+            self.PressCargCanvas.get_tk_widget().grid(row=1, column=1, sticky="nsew",pady=2.5, padx=2.5)
 
             # Motor current graph
             self.MotorAmpsHist = deque(maxlen=50)
             self.MotorAmpsTime = deque(maxlen=50)
             self.MotorAmpsFig = Figure(figsize=(5, 3))
             self.MotorAmpsAx = self.MotorAmpsFig.add_subplot(111)
-            self.MotorAmpsLine, = self.MotorAmpsAx.plot_date([], [], label="Corrente Motor", fmt='g-', linewidth=2)
-            self.MotorAmpsAx.set_title("Corrente Motor")
+            self.MotorAmpsLine, = self.MotorAmpsAx.plot_date([], [], fmt='g-', linewidth=2,label="Corrente Motor")
+            #self.MotorAmpsAx.set_title("Corrente Motor")
             self.MotorAmpsAx.set_xlabel("Hora")
             self.MotorAmpsAx.set_ylabel("Corrente (Amps)")
             self.MotorAmpsAx.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
             self.MotorAmpsAx.legend()
             self.MotorAmpsAx.grid(True)
             self.MotorAmpsCanvas = FigureCanvasTkAgg(self.MotorAmpsFig, master=self.FRA_MON_GRAPHS)
-            self.MotorAmpsCanvas.get_tk_widget().grid(row=1, column=2, sticky="nsew", pady=5, padx=5)
+            self.MotorAmpsCanvas.get_tk_widget().grid(row=1, column=2, sticky="nsew", pady=2.5, padx=2.5)
         else:
             ctk.CTkLabel(self.FRA_MON_GRAPHS, text="Gráficos indisponíveis (Matplotlib não encontrado)").grid(
                 row=1, column=0, columnspan=3, padx=10, pady=10
@@ -329,7 +395,7 @@ class MonitorFrame(ctk.CTkFrame):
             anchor="e",
             font=ctk.CTkFont(size=14, weight="bold"),
             text_color="white",
-            bg_color="orange",
+            bg_color="red",
             pady=5,
             padx=5,
         )
@@ -341,7 +407,7 @@ class MonitorFrame(ctk.CTkFrame):
             anchor="e",
             font=ctk.CTkFont(size=14, weight="bold"),
             text_color="white",
-            bg_color="red",
+            bg_color="orange",
             pady=5,
             padx=5,
         )
@@ -370,8 +436,9 @@ class MonitorFrame(ctk.CTkFrame):
 
         # Atualiza status visual da flag Store status
         st = data.get('store_flag')
-        self.lbl_statusST.configure(bg_color=("green" if st else "red"))
+        self.lbl_statusST.configure(bg_color=("green" if st else "orange"))
 
+        # Atualiza status visual da barra app status
         ts = data.get('time_stamp')
         if ts == None:
             self.lbl_status.configure(text="[Falha] Sem dados", bg_color="red")

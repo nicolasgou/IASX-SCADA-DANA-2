@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('snap7.dll', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

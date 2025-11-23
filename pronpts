@@ -1,0 +1,28 @@
+analise a estrutura do app python do repositorio IASX-AI-SYSTEM-VISION-GGH como referencia e crie um app chamado IASX-SCADA-DANA replique essa estrutura no codigo IASX-SCADA-DANA.
+
+sobre o app IASX-SCADA-DANA: Este projeto é uma aplicação Python com interface gráfica para monitoramento contínuo (24/7) de prensas de forjaria automotiva via CLP Siemens S7-1200, utilizando CustomTkinter para uma visualização em tempo real em uma TV de 50'' conectada a um PC industrial executando windows.
+
+
+Visão Geral
+Interface gráfica moderna com CustomTkinter.
+Leitura de variáveis analógicas e digitais do CLP.
+Comunicação via PROFINET (S7-ISO-on-TCP) utilizando a biblioteca snap7.
+Compatível com Raspberry Pi, Ubuntu, PCs industriais Windows.
+Operação ininterrupta: sistema robusto para execução contínua em ambientes industriais.
+
+
+
+este aplicativo devera ter 2 funcoes e interfaces de usuario especificas:
+1) Comunicação com o CLP Siemens: A comunicação é feita com o protocolo S7-ISO-on-TCP, que é a base do PROFINET e compatível com o CLP S7-1200 apresentacao das variaveis de processo em tempo real na interface MONITOR
+
+3) uma interface HISTORICO devera permitir o usuario do app vizualizar os dados historios amostrados das variaveis de processo consultando no banco de dados e exibindo em formato tabular. A interface HISTORICO devera conter uma funcao/botao "exportar" que permitira o usuario exportar os dados historicos consultados em formato csv, a funcao devera formatar a consulta em formato csv e solicitar o usuario selecionar um local na maquina para salvar o arquivo em questao, o nome padrao para salvamento do arquivo devera ser "tel-prensa-russa-AAAA-MM-DD-hh:mm"  
+
+armazenamento das variaveis de processo deverao ser feitas periodicamente em banco de dados relacional SQL MariaDB amostrados em um servidor SQL local na mesma maquina que esta executando o app python
+as variaveis de processos que deverao ser amostradas sao:
+time_stamp,temperatura_forno,pressao_carga,corrente_motor,altura_Matriz
+
+todas as variaves de processo deverao ser formato float, com exessao ao time stemp que devera ter o formato date time
+
+o banco de dados devera conter uma unica tabela "historico" com o formato para armazenar as variaveis de processo e o seu respectivo timestamp:
+time_stamp,temperatura_forno,pressao_carga,corrente_motor,altura_Matriz
+
