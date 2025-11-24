@@ -44,17 +44,18 @@ class App(ctk.CTk):
     def data_acquisition_loop(self):
         while self.running:
             try:
-                # Leitura das variáveis do CLP
-                dados = self.plc_client.read_process_variables()
+                True
+                # # Leitura das variáveis do CLP
+                # dados = self.plc_client.read_process_variables()
                 
-                # Atualização da interface
-                self.monitor_frame.update_values(dados)
+                # # Atualização da interface
+                # self.monitor_frame.update_values(dados)
 
-                #se a store flag estiver ativa, armazena os dados
-                if dados['store_flag']:
-                    self.db_manager.store_process_data(dados)# Armazenamento no banco de dados
+                # #se a store flag estiver ativa, armazena os dados
+                # if dados['store_flag']:
+                #     self.db_manager.store_process_data(dados)# Armazenamento no banco de dados
                 
-                time.sleep(TIMER)  # Intervalo de amostragem de 1 segundo
+                # time.sleep(TIMER)  # Intervalo de amostragem de 1 segundo
                 
             except Exception as e:
                 print(f"[App] Erro na aquisição de dados: {e}")

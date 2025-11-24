@@ -11,6 +11,7 @@ class HistoricoFrame(ctk.CTkFrame):
         self.pack(expand=True, fill="both", padx=10, pady=10)
         self.db_manager = db_manager
         self.current_data = []
+        self.status_label = None
 
         self.setup_ui()
 
@@ -43,8 +44,34 @@ class HistoricoFrame(ctk.CTkFrame):
         )
         period_menu.pack(side="left", padx=5)
 
+        ctk.CTkLabel(control_frame, text="Inicio:").pack(side="left", padx=5)
+        self.start_entry = ctk.CTkEntry(
+            control_frame,
+            width=150,
+            placeholder_text="YYYY-MM-DD HH:MM",
+        )
+        self.start_entry.pack(side="left", padx=5)
+
+        ctk.CTkLabel(control_frame, text="Fim:").pack(side="left", padx=5)
+        self.end_entry = ctk.CTkEntry(
+            control_frame,
+            width=150,
+            placeholder_text="YYYY-MM-DD HH:MM",
+        )
+        self.end_entry.pack(side="left", padx=5)
+
+        self.apply_btn = ctk.CTkButton(
+            control_frame,
+            text="Aplicar intervalo",
+            command=self.apply_custom_range,
+        )
+        self.apply_btn.pack(side="left", padx=5)
+
         self.export_btn = ctk.CTkButton(control_frame, text="Exportar CSV", command=self.export_data)
         self.export_btn.pack(side="right", padx=5)
+
+        self.status_label = ctk.CTkLabel(self, text="", text_color="gray40", anchor="w")
+        self.status_label.pack(fill="x", padx=10, pady=(0, 5))
 
         # Container da Tabela (preenche toda área)
         self.table_container = ctk.CTkFrame(self)
@@ -99,7 +126,7 @@ class HistoricoFrame(ctk.CTkFrame):
         self.vsb.grid(row=0, column=1, sticky="ns")
         self.hsb.grid(row=1, column=0, sticky="ew")
 
-    def update_data(self, *args):
+    def update_data(self, *_args, start_date=None, end_date=None):
         # Calcular período
         period_map = {
             "1h": timedelta(hours=1),
@@ -112,8 +139,9 @@ class HistoricoFrame(ctk.CTkFrame):
             "90d": timedelta(days=90),
         }
 
-        end_date = datetime.now()
-        start_date = end_date - period_map.get(self.period_var.get(), timedelta(hours=1))
+        if start_date is None or end_date is None:
+            end_date = datetime.now()
+            start_date = end_date - period_map.get(self.period_var.get(), timedelta(hours=1))
 
         # Query
         data = self.db_manager.get_historical_data(start_date, end_date) or []
@@ -158,6 +186,34 @@ class HistoricoFrame(ctk.CTkFrame):
                     f"{float(alt):.2f}" if alt is not None else "",
                 ])
             self.tree.insert("", "end", values=values)
+
+    def apply_custom_range(self):
+        self.set_status("")
+        start_str = self.start_entry.get().strip()
+        end_str = self.end_entry.get().strip()
+
+        if not start_str or not end_str:
+            self.set_status("Informe inicio e fim no formato AAAA-MM-DD HH:MM.", "red")
+            return
+
+        dt_format = "%Y-%m-%d %H:%M"
+        try:
+            start_dt = datetime.strptime(start_str, dt_format)
+            end_dt = datetime.strptime(end_str, dt_format)
+        except ValueError:
+            self.set_status("Formato invalido. Use AAAA-MM-DD HH:MM.", "red")
+            return
+
+        if start_dt >= end_dt:
+            self.set_status("Data inicial deve ser menor que a final.", "red")
+            return
+
+        self.update_data(start_date=start_dt, end_date=end_dt)
+        self.set_status("Intervalo aplicado ao historico.", "green")
+
+    def set_status(self, message, color="gray40"):
+        if self.status_label:
+            self.status_label.configure(text=message, text_color=color)
 
     def export_data(self):
         # Nome padrão

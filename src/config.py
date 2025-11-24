@@ -25,11 +25,11 @@ SB_ALTURA_MATRIZ = 56   # Start byte for Real variable height
 ###############################################################################
 BD_USER="root",
 BD_PASSWORD="T3cn0log!@",
-BD_HOST="192.168.0.130",
+BD_HOST="localhost",
 BD_DATABASE="scada_dana"
 
 DB_CONFIG = {
-    'host': '192.168.0.130',
+    'host': 'localhost',
     'user': 'root',
     'password': 'T3cn0log!@',
     'database': 'scada_dana'
